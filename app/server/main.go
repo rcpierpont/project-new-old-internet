@@ -17,7 +17,7 @@ type envConfig struct {
 	db       *database.Queries
 }
 
-// TODO: db schema and basic queries for weeoos(posts) and honks(comments) and basic CRUD operations
+// TODO: db schema and basic queries for kreeyaws(posts) and honks(comments) and basic CRUD operations
 func main() {
 	godotenv.Load()
 
