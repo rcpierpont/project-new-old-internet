@@ -2,10 +2,10 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"sync/atomic"
 
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
@@ -15,9 +15,12 @@ import (
 type envConfig struct {
 	platform string
 	db       *database.Queries
+	hits     atomic.Int32
+	secret   string
 }
 
-// TODO: db schema and basic queries for kreeyaws(posts) and honks(comments) and basic CRUD operations
+// TODO: authenticated queries for creating and fetching kreeyaws
+// TODO: basic front end client that takes email and password and posts to login endpoint
 func main() {
 	godotenv.Load()
 
@@ -25,8 +28,9 @@ func main() {
 	const port = "8080"
 
 	dbURL := os.Getenv("DB_URL")
-	fmt.Printf("db url is: %s\n", dbURL)
 	platform := os.Getenv("PLATFORM")
+	secret := os.Getenv("SECRET")
+
 	db, err := sql.Open("postgres", dbURL)
 	if err != nil {
 		log.Fatal(err)
@@ -35,13 +39,22 @@ func main() {
 	cfg := envConfig{
 		platform: platform,
 		db:       database.New(db),
+		hits:     atomic.Int32{},
+		secret:   secret,
 	}
 
 	mux := http.NewServeMux()
 	mux.Handle("/app/", cfg.middlewareHTTP(http.StripPrefix("/app/", http.FileServer(http.Dir(filepathRoot)))))
 
-	mux.HandleFunc("POST /api/users", cfg.handlerUsers)
+	mux.HandleFunc("POST /api/users", cfg.handlerCreateUser)
 	mux.HandleFunc("GET /api/users/{userID}", cfg.handlerGetUserByID)
+
+	mux.HandleFunc("POST /api/kreeyaws", cfg.handlerCreateKreeyaw)
+
+	mux.HandleFunc("POST /api/login", cfg.handlerLogin)
+	mux.HandleFunc("POST /api/refresh", cfg.handlerRefresh)
+
+	mux.HandleFunc("POST /admin/reset", cfg.handlerReset)
 
 	server := &http.Server{
 		Addr:    ":" + port,
@@ -54,6 +67,7 @@ func main() {
 
 func (cfg *envConfig) middlewareHTTP(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		cfg.hits.Add(1)
 		next.ServeHTTP(w, r)
 	})
 }

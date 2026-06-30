@@ -8,6 +8,8 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/rcpierpont/project-new-old-internet/internal/auth"
+	"github.com/rcpierpont/project-new-old-internet/internal/database"
 )
 
 type User struct {
@@ -15,11 +17,13 @@ type User struct {
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 	Email     string    `json:"email"`
+	Password  string    `json:"-"`
 }
 
-func (cfg *envConfig) handlerUsers(w http.ResponseWriter, r *http.Request) {
+func (cfg *envConfig) handlerCreateUser(w http.ResponseWriter, r *http.Request) {
 	type parameters struct {
-		Email string `json:"email"`
+		Email    string `json:"email"`
+		Password string `json:"password"`
 	}
 	type response struct {
 		User
@@ -34,8 +38,16 @@ func (cfg *envConfig) handlerUsers(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	fmt.Printf("creating user: %s\n", params.Email)
-	user, err := cfg.db.CreateUser(r.Context(), params.Email)
+	hashedPW, err := auth.HashPassword(params.Password)
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, "unable to hash password", err)
+		return
+	}
+
+	user, err := cfg.db.CreateUser(r.Context(), database.CreateUserParams{
+		Email:          params.Email,
+		HashedPassword: hashedPW,
+	})
 	if err != nil {
 		fmt.Printf("error: %v\n", err)
 		respondWithError(w, http.StatusInternalServerError, "unable to create user", err)
