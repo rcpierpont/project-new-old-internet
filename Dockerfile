@@ -18,7 +18,7 @@ COPY server/ ./server/
 COPY sql/ ./sql/
 
 # Build the Go application from the server directory
-RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-w -s" -o /app/server ./server/main.go
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-w -s" -o /app/server ./server
 
 # --- Stage 2: Final Production Container ---
 FROM alpine:3.19
@@ -41,4 +41,4 @@ COPY app/ /workspace/app/
 EXPOSE 8080
 
 # Run migrations first, then start the Go server
-CMD ["sh", "-c", "goose -dir ./sql/schema postgres \"$DATABASE_URL\" up && ./server"]
+CMD ["sh", "-c", "goose -dir ./sql/schema postgres \"$DB_URL\" up && ./server"]
