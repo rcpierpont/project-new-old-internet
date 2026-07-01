@@ -1,0 +1,36 @@
+services:
+  # --- PostgreSQL Database Service ---
+  postgres-db:
+    image: postgres:16-alpine
+    container_name: my_postgres_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: maomao
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U myuser -d mydbname"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # --- Go Application Service ---
+  web-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: my_go_web_app
+    ports:
+      - "8080:8080"
+    environment:
+      # Goose and Go server use this exact connection string format
+      DATABASE_URL: "postgres://postgres:postgres@postgres-db:5432/maomao?sslmode=disable"
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+
+volumes:
+  pgdata:

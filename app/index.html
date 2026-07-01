@@ -1,0 +1,43 @@
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Maomao</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <div class="nav-bar">
+      <h1>
+        Maomao
+        <span class="subtitle">This is my personal project</span>
+      </h1>
+      <button onclick="logout()">Logout</button>
+    </div>
+    <div id="auth-section">
+      <h2>Login</h2>
+      <form id="login-form">
+        <input
+          class="input-area"
+          type="email"
+          id="email"
+          placeholder="Email"
+          required
+        />
+        <input
+          class="input-area"
+          type="password"
+          id="password"
+          placeholder="Password"
+          required
+        />
+        <div class="button-container">
+          <button type="submit">Login</button>
+          <button onclick="signup()" type="button">Signup</button>
+        </div>
+      </form>
+    </div>
+  </body>
+</html>

@@ -28,8 +28,8 @@ func (cfg *envConfig) handlerHits(w http.ResponseWriter, r *http.Request) {
 	hits := fmt.Sprintf(`
 <html>
 <body>
-	<h1>Welcome, Chirpy Admin</h1>
-	<p>Chirpy has been visited %d times!</p>
+	<h1>Welcome, Maomao Admin</h1>
+	<p>Maomao has been visited %d times!</p>
 </body>
 	
 </html>`, cfg.hits.Load())

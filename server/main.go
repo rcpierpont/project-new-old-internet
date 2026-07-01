@@ -24,7 +24,7 @@ type envConfig struct {
 func main() {
 	godotenv.Load()
 
-	const filepathRoot = "."
+	const filepathRoot = "app"
 	const port = "8080"
 
 	dbURL := os.Getenv("DB_URL")
@@ -44,7 +44,8 @@ func main() {
 	}
 
 	mux := http.NewServeMux()
-	mux.Handle("/app/", cfg.middlewareHTTP(http.StripPrefix("/app/", http.FileServer(http.Dir(filepathRoot)))))
+	appHandler := cfg.middlewareHTTP(http.StripPrefix("/app", http.FileServer(http.Dir(filepathRoot))))
+	mux.Handle("/app/", appHandler)
 
 	mux.HandleFunc("POST /api/users", cfg.handlerCreateUser)
 	mux.HandleFunc("GET /api/users/{userID}", cfg.handlerGetUserByID)
@@ -53,6 +54,7 @@ func main() {
 
 	mux.HandleFunc("POST /api/login", cfg.handlerLogin)
 	mux.HandleFunc("POST /api/refresh", cfg.handlerRefresh)
+	mux.HandleFunc("POST /api/revoke", cfg.handlerRevoke)
 
 	mux.HandleFunc("POST /admin/reset", cfg.handlerReset)
 
