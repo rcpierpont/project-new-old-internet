@@ -1,19 +1,28 @@
 # project-new-old-internet
-Using what I've learned from bootdev to recreate something deployable and full-stack that can be used by close friends and family.
+
+WORK IN PROGRESS
+
+Using what I've learned from bootdev, I'm creating a full-stack social media app with basic post, comment, image, and video features. It will be deployable to docker and will require an aws account, but anyone with aws and docker accounts can start up their own environment and host it where they want, inviting only the people they want.
 
 # Basic architecture
-- Postgresql db for users, posts, comments
+- Postgresql db for users, posts, comments, and file urls
+- js front end (more design decisions tbd)
 - Web App clients authenticate users and publish their posts so server can consume and add to db
 - RabbitMQ post queues (users subscribe to other users, server subscribes to posts published by users so it can write to db)
 - S3 bucket for storing image and video files
 
-# Detailed breakdown of TODOs
-- configure database schema
+# Highest priority TODOs
 - implement authenticated database CRUD operations for users, posts, and comments
-- implement basic ui for client-initiated CRUD operations
-- implement image/video posts and connect to s3 storage
+- implement admin portal and self-service password changes
+- implement ui for client-initiated CRUD operations (creating posts and comments) that leverages authn/authz where needed
+- implement ability to attach image/video to posts by uploading to s3 storage
 - set up rabbitMQ so created posts and comments are published to queue that server subscribes to
 - set up rabbitMQ channel for server to publish posts, after being added to db, for users to subscribe to
+- implement ability for users to follow other users and a ui page for posts of followed users
+
+# Long-term TODOs
+- implement ability to attach images/videos from other sites via links instead of requiring local upload
+- implement likes and dislikes (maybe other reactions?)
 
 # Tool dependencies
 - goose and sqlc for golang-postgres layer
