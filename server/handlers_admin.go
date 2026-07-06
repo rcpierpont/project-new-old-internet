@@ -8,7 +8,7 @@ import (
 func (cfg *envConfig) handlerReset(w http.ResponseWriter, r *http.Request) {
 	if cfg.platform != "dev" {
 		w.WriteHeader(http.StatusForbidden)
-		w.Write([]byte("Reset is only allowed in dev environment."))
+		w.Write([]byte("Reset is only allowed in dev environment.\n"))
 		return
 	}
 
@@ -16,11 +16,11 @@ func (cfg *envConfig) handlerReset(w http.ResponseWriter, r *http.Request) {
 	err := cfg.db.DeleteAllUsers(r.Context())
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte("Failed to reset the database: " + err.Error()))
+		w.Write([]byte("Failed to reset the database: " + err.Error() + "\n"))
 		return
 	}
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Hits reset to 0 and database reset to initial state."))
+	w.Write([]byte("Hits reset to 0 and database reset to initial state.\n"))
 }
 
 func (cfg *envConfig) handlerHits(w http.ResponseWriter, r *http.Request) {

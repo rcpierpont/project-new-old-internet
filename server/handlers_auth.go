@@ -45,7 +45,7 @@ func (cfg *envConfig) handlerLogin(w http.ResponseWriter, r *http.Request) {
 
 	user, err := cfg.db.GetUserByEmail(r.Context(), params.Email)
 	if err != nil {
-		respondWithError(w, http.StatusNotFound, "unable to find user in database", err)
+		respondWithError(w, http.StatusInternalServerError, "unable to find user in database", err)
 		return
 	}
 

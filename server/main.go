@@ -19,8 +19,8 @@ type envConfig struct {
 	secret   string
 }
 
-// TODO: authenticated queries for creating and fetching kreeyaws
-// TODO: basic front end client that takes email and password and posts to login endpoint
+// TODO: front end for creating kreeyaws
+// TODO: front end for fetching kreeyaws
 func main() {
 	godotenv.Load()
 
@@ -44,19 +44,22 @@ func main() {
 	}
 
 	mux := http.NewServeMux()
-	appHandler := cfg.middlewareHTTP(http.StripPrefix("/app", http.FileServer(http.Dir(filepathRoot))))
-	mux.Handle("/app/", appHandler)
+	appHandler := cfg.middlewareHTTP(http.StripPrefix("/", http.FileServer(http.Dir(filepathRoot))))
+	mux.Handle("/", appHandler)
 
 	mux.HandleFunc("POST /api/users", cfg.handlerCreateUser)
 	mux.HandleFunc("GET /api/users/{userID}", cfg.handlerGetUserByID)
 
 	mux.HandleFunc("POST /api/kreeyaws", cfg.handlerCreateKreeyaw)
+	mux.HandleFunc("GET /api/kreeyaws/{kreeyawID}", cfg.handlerGetKreeyawByID)
+	mux.HandleFunc("DELETE /api/kreeyaws/{kreeyawID}", cfg.handlerDeleteKreeyaw)
 
 	mux.HandleFunc("POST /api/login", cfg.handlerLogin)
 	mux.HandleFunc("POST /api/refresh", cfg.handlerRefresh)
 	mux.HandleFunc("POST /api/revoke", cfg.handlerRevoke)
 
 	mux.HandleFunc("POST /admin/reset", cfg.handlerReset)
+	mux.HandleFunc("GET /admin/metrics", cfg.handlerHits)
 
 	server := &http.Server{
 		Addr:    ":" + port,
