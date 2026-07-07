@@ -37,3 +37,12 @@ Start with basic db crud operations and then build a minimal front end to intera
 Implement authentication from frontend (user creation and login), then image/video sharing.
 
 Finally, set up client and server publishing and subscribing, and then build a front end for client to view their subscription feed.
+
+# Helpful commands
+
+to refresh docker container with updated local code and start the container for testing:
+
+```
+cd <root of project or app directory>
+docker compose up --build
+``` 

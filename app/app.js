@@ -37,13 +37,13 @@ async function login() {
     if (data.token) {
       localStorage.setItem('token', data.token);
       document.getElementById('auth-section').style.display = 'none';
-      alert('Login successful!');
     } else {
       alert('Login failed. Please check your credentials.');
     }
   } catch (error) {
     alert(`Error: ${error.message}`);
   }
+  window.location.replace("http://localhost:8080/kreeyaws");
 }
 
 async function signup() {
