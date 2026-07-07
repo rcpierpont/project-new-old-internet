@@ -1,12 +1,12 @@
 :root {
-    --bg-color: #1e1e1e;
-    --fg-color: #f5f5f5;
+    --bg-color: #0d2329;
+    --fg-color: #ffffff;
     --subtle-color: #888;
-    --primary-color: #bb86fc;
+    --primary-color: #b1ee94;
     --input-bg: #2a2a2a;
     --input-border: #444;
-    --button-bg: #7e57c2;
-    --button-hover: #5c4db1;
+    --button-bg: #c76998;
+    --button-hover: #a05078;
 }
 
 body {
