@@ -1,18 +1,18 @@
 document.addEventListener('DOMContentLoaded', async () => {
   const token = localStorage.getItem('token');
-
+  
   if (token) {
-    document.getElementById('kreeyaw-section').style.display = 'none';
-    //document.getElementById('video-section').style.display = 'block';
-    //await getVideos();
+    const kreeyaws = await getKreeyaws();
+    if (kreeyaws.length > 0) {
+      document.getElementById('kreeyaw-section').style.display = 'block';
+    } 
   } else {
-    document.getElementById('kreeyaw-section').style.display = 'none';
-    //document.getElementById('video-section').style.display = 'none';
+    window.location.replace("http://localhost:8080/");
   }
   await logout();
 });
 
-function logout() {
+async function logout() {
   localStorage.removeItem('token');
   window.location.replace("http://localhost:8080/");
 }

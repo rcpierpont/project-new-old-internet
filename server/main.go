@@ -19,7 +19,7 @@ type envConfig struct {
 	secret   string
 }
 
-// TODO: front end for creating kreeyaws
+// TODO: redirect user to their posted kreeyaws after creating one
 // TODO: front end for fetching kreeyaws
 func main() {
 	godotenv.Load()

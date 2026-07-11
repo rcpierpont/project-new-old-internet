@@ -3,10 +3,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   if (token) {
     document.getElementById('auth-section').style.display = 'none';
+    document.getElementById('kreeyaw-create-section').style.display = 'block';
     //document.getElementById('video-section').style.display = 'block';
     //await getVideos();
   } else {
     document.getElementById('auth-section').style.display = 'block';
+    document.getElementById('kreeyaw-create-section').style.display = 'none';
     //document.getElementById('video-section').style.display = 'none';
   }
   await logout();
@@ -15,7 +17,44 @@ document.addEventListener('DOMContentLoaded', async () => {
 document.getElementById('login-form').addEventListener('submit', async (event) => {
   event.preventDefault();
   await login();
+  document.getElementById('kreeyaw-create-section').style.display = 'block';
 });
+
+document.getElementById('kreeyaw-form').addEventListener('postKreeyaw', async (event) => {
+  event.preventDefault();
+  console.log("posting kreeyaw");
+  await postKreeyaw();
+});
+
+async function postKreeyaw() {
+  const body = document.getElementById('body').value;
+  console.log(`body of kreeyaw is: ${body}`);
+
+  try {
+    const res = await fetch('/api/kreeyaws', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      },
+      body: JSON.stringify({ body }),
+    });
+    
+    const data = await res.json();
+    if (!res.ok) {
+      throw new Error(`Failed to post kreeyaw: ${data.error}`);
+    }
+
+    if (data.id) {
+      alert('kreeyaw posted successfully!');
+    } else {
+      throw new Error(`Failed to post kreeyaw: ${data.error}`);
+    }
+
+  } catch (error) {
+    alert(`Error: ${error.message}`);
+  }
+}
 
 async function login() {
   const email = document.getElementById('email').value;
@@ -43,7 +82,6 @@ async function login() {
   } catch (error) {
     alert(`Error: ${error.message}`);
   }
-  window.location.replace("http://localhost:8080/kreeyaws");
 }
 
 async function signup() {
